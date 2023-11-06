@@ -326,7 +326,13 @@ class CopyCheckTester(unittest.TestCase):
                 self.assertEqual(diffs, [])
 
     def test_is_copy_consistent_with_ignored_not_match(self):
-        path_to_check = ["src", "transformers", "models", "dummy_roberta_not_match", "modeling_dummy_roberta_not_match.py"]
+        path_to_check = [
+            "src",
+            "transformers",
+            "models",
+            "dummy_roberta_not_match",
+            "modeling_dummy_roberta_not_match.py",
+        ]
         with tempfile.TemporaryDirectory() as tmp_folder:
             # Base check with an inconsistency
             create_tmp_repo(tmp_folder)
@@ -335,7 +341,9 @@ class CopyCheckTester(unittest.TestCase):
 
                 diffs = is_copy_consistent(file_to_check)
                 # line 12: `def only_in_roberta_not_ignored(self, c):` in `MOCK_DUMMY_ROBERTA_CODE_NOT_MATCH`
-                self.assertEqual(diffs, [["models.dummy_bert_not_match.modeling_dummy_bert_not_match.BertDummyModel", 12]])
+                self.assertEqual(
+                    diffs, [["models.dummy_bert_not_match.modeling_dummy_bert_not_match.BertDummyModel", 12]]
+                )
 
                 diffs = is_copy_consistent(file_to_check, overwrite=True)
 

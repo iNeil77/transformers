@@ -162,7 +162,9 @@ def find_block_end(lines: List[str], start_index: int, indent: int) -> int:
     return line_index
 
 
-def split_code_into_blocks(lines: List[str], start_index: int, end_index: int, indent: int, backtrace: bool = False) -> List[Tuple[str, int, int]]:
+def split_code_into_blocks(
+    lines: List[str], start_index: int, end_index: int, indent: int, backtrace: bool = False
+) -> List[Tuple[str, int, int]]:
     """
     Split the class/func block starting at `start_index` in a source code (defined by `lines`) into *inner blocks*.
 
@@ -196,7 +198,6 @@ def split_code_into_blocks(lines: List[str], start_index: int, end_index: int, i
     block_without_name_idx = 0
 
     while index < end_index:
-
         # if found, it will be an inner block
         block_found = re.search(rf"^{indent_str}((class|def)\s+\S+)(\(|\:)", lines[index])
         if block_found:
@@ -208,10 +209,13 @@ def split_code_into_blocks(lines: List[str], start_index: int, end_index: int, i
             # empty line is encountered.
             block_start_index = index
             if index > prev_block_end_index and backtrace:
-
                 idx = index - 1
                 for idx in range(index - 1, prev_block_end_index - 1, -1):
-                    if not (len(lines[idx].strip()) > 0 and lines[idx].startswith(indent_str) and not lines[idx].startswith(" " * (indent + 4))):
+                    if not (
+                        len(lines[idx].strip()) > 0
+                        and lines[idx].startswith(indent_str)
+                        and not lines[idx].startswith(" " * (indent + 4))
+                    ):
                         break
                 idx += 1
                 if idx < index:
@@ -266,7 +270,9 @@ def split_code_into_blocks(lines: List[str], start_index: int, end_index: int, i
     return blocks
 
 
-def find_code_in_transformers(object_name: str, base_path: str = None, return_indices: bool = False) -> Union[str, Tuple[List[str], int, int]]:
+def find_code_in_transformers(
+    object_name: str, base_path: str = None, return_indices: bool = False
+) -> Union[str, Tuple[List[str], int, int]]:
     """
     Find and return the source code of an object.
 
@@ -456,20 +462,24 @@ def find_replaced_code(object_name, filename, replace_pattern, buf=None):
         target_lines, theoretical_code, theoretical_code_splits = buf[(object_name, base_path)]
     else:
         # base_path = TRANSFORMERS_PATH if not filename.startswith("tests") else MODEL_TEST_PATH
-        theoretical_code, (target_lines, target_start_index, target_end_index) = find_code_in_transformers(object_name, base_path=base_path, return_indices=True)
+        theoretical_code, (target_lines, target_start_index, target_end_index) = find_code_in_transformers(
+            object_name, base_path=base_path, return_indices=True
+        )
         theoretical_indent = get_indent(theoretical_code)
 
         # Split the theoretical code into blocks
         # `theoretical_indent` is the indent of the class/def declaration, but `theoretical_code_splits` expect the
         # indent level of the class/def body.
-        theoretical_code_splits = split_code_into_blocks(target_lines, target_start_index, target_end_index, len(theoretical_indent) + 4, backtrace=True)
+        theoretical_code_splits = split_code_into_blocks(
+            target_lines, target_start_index, target_end_index, len(theoretical_indent) + 4, backtrace=True
+        )
         buf[(object_name, base_path)] = target_lines, theoretical_code, theoretical_code_splits
 
     # theoretical code replaced by the patterns
     theoretical_code_blocks = OrderedDict()
     for name, start, end in theoretical_code_splits:
         name = replace_code(name, replace_pattern)
-        code = ''.join(target_lines[start:end])
+        code = "".join(target_lines[start:end])
         code = replace_code(code, replace_pattern)
         theoretical_code_blocks[name] = code
 
@@ -540,7 +550,7 @@ def is_copy_consistent(filename: str, overwrite: bool = False, buf: dict = None)
         # observed code
         observed_code_blocks = OrderedDict()
         for name, start, end in observed_code_splits:
-            code = ''.join(lines[start:end])
+            code = "".join(lines[start:end])
             observed_code_blocks[name] = code
 
         # Below, we change some names in `theoretical_code_splits_renamed` to `_ignored_existing_block_xxx` or
@@ -573,20 +583,32 @@ def is_copy_consistent(filename: str, overwrite: bool = False, buf: dict = None)
                     # not in the target --> need to add back
                     theoretical_code_blocks[f"_ignored_new_block_{ignored_new_block_index}"] = code
                     del observed_code_blocks[name]
-                    name_mappings[f"_ignored_new_block_{ignored_new_block_index}"] = f"_ignored_new_block_{ignored_new_block_index}"
+                    name_mappings[
+                        f"_ignored_new_block_{ignored_new_block_index}"
+                    ] = f"_ignored_new_block_{ignored_new_block_index}"
                     ignored_new_block_index += 1
 
         # Respect the original block order in the theoretical code: the new blocks will follow the existing ones
-        theoretical_code_blocks = {name_mappings[orig_name]: theoretical_code_blocks[name_mappings[orig_name]] for orig_name in name_mappings}
+        theoretical_code_blocks = {
+            name_mappings[orig_name]: theoretical_code_blocks[name_mappings[orig_name]] for orig_name in name_mappings
+        }
 
         # ignore the blocks specified to be ignored
         # this is the version used to check if there is a mismatch
         # (don't remove "_empty_block_" otherwise `blackify` later will be slower)
-        theoretical_code_blocks_clean = {k: v for k, v in theoretical_code_blocks.items() if not (k.startswith(("_ignored_existing_block_", "_ignored_new_block_")))}
-        theoretical_code = ''.join(list(theoretical_code_blocks_clean.values()))
+        theoretical_code_blocks_clean = {
+            k: v
+            for k, v in theoretical_code_blocks.items()
+            if not (k.startswith(("_ignored_existing_block_", "_ignored_new_block_")))
+        }
+        theoretical_code = "".join(list(theoretical_code_blocks_clean.values()))
 
-        observed_code_blocks_clean = {k: v for k, v in observed_code_blocks.items() if not (k.startswith(("_ignored_existing_block_", "_ignored_new_block_")))}
-        observed_code = ''.join(list(observed_code_blocks_clean.values()))
+        observed_code_blocks_clean = {
+            k: v
+            for k, v in observed_code_blocks.items()
+            if not (k.startswith(("_ignored_existing_block_", "_ignored_new_block_")))
+        }
+        observed_code = "".join(list(observed_code_blocks_clean.values()))
 
         # blackify before compare
         theoretical_code = blackify(theoretical_code)
@@ -602,8 +624,8 @@ def is_copy_consistent(filename: str, overwrite: bool = False, buf: dict = None)
         for idx, line in enumerate(observed_code_lines):
             if line.strip():
                 new_observed_code_lines.append(line)
-                idx_to_orig_idx_mapping_for_observed_code_lines[len(new_observed_code_lines)-1] = idx
-        observed_code = '\n'.join(new_observed_code_lines)
+                idx_to_orig_idx_mapping_for_observed_code_lines[len(new_observed_code_lines) - 1] = idx
+        observed_code = "\n".join(new_observed_code_lines)
 
         # Test for a diff and act accordingly.
         diff_index = check_codes_match(observed_code, theoretical_code)
@@ -614,7 +636,7 @@ def is_copy_consistent(filename: str, overwrite: bool = False, buf: dict = None)
             diffs.append([object_name, diff_index + start_index + 1])
             if overwrite:
                 # `theoretical_code_to_write` is a single string but may have several lines.
-                theoretical_code_to_write = blackify(''.join(list(theoretical_code_blocks.values())))
+                theoretical_code_to_write = blackify("".join(list(theoretical_code_blocks.values())))
                 lines = lines[:start_index] + [theoretical_code_to_write] + lines[line_index:]
                 # Here we treat it as a single entry in `lines`.
                 line_index = start_index + 1
