@@ -1,3 +1,5 @@
 datasets >= 1.4.0
 tensorflow >= 2.3.0
 evaluate >= 0.2.0
+numpy>=1.22.2 # not directly required, pinned by Snyk to avoid a vulnerability
+pyarrow>=14.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
