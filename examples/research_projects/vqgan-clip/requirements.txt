@@ -25,3 +25,4 @@ transformers==4.26.0
 tokenizers==0.13.2
 typing_extensions
 wandb
+aiohttp>=3.9.2 # not directly required, pinned by Snyk to avoid a vulnerability
