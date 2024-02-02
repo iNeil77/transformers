@@ -6,3 +6,4 @@ optax>=0.0.8
 torch==1.9.0+cpu 
 -f https://download.pytorch.org/whl/torch_stable.html
 torchvision==0.10.0+cpu
+pillow>=10.2.0 # not directly required, pinned by Snyk to avoid a vulnerability
