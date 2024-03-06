@@ -6,3 +6,5 @@ optax>=0.0.8
 torch>=1.9.0
 jiwer
 evaluate
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+wheel>=0.38.0 # not directly required, pinned by Snyk to avoid a vulnerability
