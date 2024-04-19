@@ -3,6 +3,7 @@ jax>=0.3.6
 jaxlib>=0.3.6
 flax>=0.4.1
 optax>=0.0.8
-torch>=1.9.0
+torch>=2.2.0
 jiwer
 evaluate
+aiohttp>=3.9.4 # not directly required, pinned by Snyk to avoid a vulnerability
