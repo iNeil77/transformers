@@ -3,3 +3,4 @@ transformers==4.21.1
 wandb==0.13.1
 evaluate==0.2.2
 scikit-learn==1.1.2
+setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
