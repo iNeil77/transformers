@@ -1,4 +1,4 @@
 git://github.com/huggingface/accelerate.git
 datasets >= 2.0.0
-torch >= 1.3
+torch>=2.9.0
 evaluate
