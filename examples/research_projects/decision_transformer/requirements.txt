@@ -54,7 +54,7 @@ execnet==1.9.0
 executing==0.8.3
 faiss-cpu==1.7.2
 fasteners==0.17.3
-filelock==3.6.0
+filelock==3.20.1
 fire==0.4.0
 flake8==4.0.1
 Flask==2.3.2
@@ -217,7 +217,7 @@ timm==0.5.4
 tokenizers==0.11.6
 tomli==2.0.1
 toolz==0.11.2
-torch==1.11.0
+torch==2.2.0
 torchaudio==0.11.0
 torchvision==0.12.0
 tqdm==4.63.0
